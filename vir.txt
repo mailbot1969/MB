@@ -1,0 +1,196 @@
+kvm
+egrep -c 'lm' /proc/cpuinfo
+uname -a
+uname -m
+ls /lib/modules/5.4.0-84-generic/kernel/arch/x86/kvm/kvm*
+sudo apt update
+sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager qemu-system
+sudo apt install qemu-kvm libvirt-bin bridge-utils virt-manager qemu-system
+sudo nano /etc/libvirt/libvirt.conf
+
+
+grep ^[^#] /etc/libvirt/libvirtd.conf
+listen_addr = "0.0.0.0"
+unix_sock_group = "libvirt"
+unix_sock_ro_perms = "0777"
+unix_sock_rw_perms ="0777"
+unix_sock_dir="/var/run/libvirt"
+auth_unix_ro ="none"
+auth_unix_rw="none"
+
+sudo systemctl restart libvirtd
+virsh list
+virsh
+version
+nodeinfo
+
+go to virtmanager
+QEMU/KVM
+new
+import existing
+open browser download
+https://download.cirros-cloud.net/0.5.1/ (provide the path)
+click finish
+
+KVM INSTALL
+
+sudo apt install virt-manager -y
+
+In menu vrtual machine manager
+File- add vm
+Maula install,type os-ubuntu,allocate memcpu,create a disk img,forward finish
+
+KVM CONVERTION
+
+install qemu
+
+sudo qemu-img convert -o vpc kali-linux-2025.3-qemu-amd64.qcow2 kali.vhd -p 
+img raw
+vdi vdi
+4sudo qemu-img resize name_kali +16
+
+----------------------------------
+
+hyperv
+windows r
+optionalfeatures
+hyper-v clikc
+open hyper v
+actions->new->virtualmachine
+network(hyper-v manager) wd115->action-
+get-VM
+Start-VM -Name "name"
+Stop-Vm -Name "name" --force
+Checkpoint-VM -Name "name" -SnapshotName ""
+Set-VMMemory -VMName "name" -StartBytes 4GB
+get-vm | where {$_.State -eq 'Running'}
+--------------------------------------------
+openstack
+sudo snap install microstack --classic --edge
+sudo microstack init --auto --control
+microstack.openstack endpoint list
+https://endpointlist ip
+advanced->proceed
+username ->admin
+sudo cat /var/snap/microstack/common/etc/microstack.rc
+password copy paste
+upload a image
+project->compute->images
+name:ubuntu-22.04
+https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+format:QCOW2
+----------------------------------------------
+linux bridge
+sudo apt install bridge-utils
+sudo modprobe bridge
+sudo modprobe br_netfilter
+sudo -i
+brctl addbr new-cloud
+brctl addif new-cloud enp0s3
+ifconfig enp0s3 0
+ifconfig new-cloud 10.0.2.15 netmask 255.255.255.0
+route add default gw 10.0.2.15 dev new-cloud
+ip a
+route -n
+brctl show
+------------------------------------------------
+openvswitch
+sudo apt install openvswitch-switch net-tools -y
+sudo ovs-vsctl add-br br1
+sudo ip netns add ns1
+sudo ip netns add ns2
+sudo ip link add veth1 type veth peer name veth2
+sudo ip link add veth3 type veth peer name veth4
+sudo ip link set veth1 netns ns1
+sudo ip link set veth3 netns ns2
+sudo ovs-vsctl add-port br1 veth2
+sudo ovs-vsctl add-port br1 veth4
+sudo ip link set veth2 up
+sudo ip link set veth4 up
+sudo ip link set br1 up
+sudo ip netns exec ns1 ip addr add 10.0.0.1/24 dev veth1
+sudo ip netns exec ns2 ip addr add 10.0.0.2/24 dev veth3
+sudo ip netns exec ns1 ip link set veth1 up
+sudo ip netns exec ns2 ip link set veth3 up
+sudo ip netns exec ns1 ping 10.0.0.2 
+
+-------------------------------------------------
+
+
+nfs
+both should be in hostonly
+do in ubuntu
+sudo apt install nfs-kernel-server -y
+mkdir -p /srv/nfs/sample-nfs
+sudo chown nobody:nogroup /srv/nfs/sample-nfs
+sudo chmod 777 /srv/nfs/sample-nfs
+sudo nano /etc/exports
+/srv/nfs/sample-nfs ubuntu ip(rw,syn,no_subtree_check,no_root_squash)
+sudo exportfs -a
+sudo systemctl restart nfs-kernel-server
+
+kali
+sudo apt install nfs-common
+sudo mkdir -p /srv/nfs/sample-nfs
+sudo mount ubuntu ip:/srv/nfs/sample-nfs /mnt/nfs/sample-nfs
+------------------------------------------
+
+ssh
+kali
+
+sudo apt update
+sudo apt install openssh-server
+sudo systemctl enable ssh
+sudo systemctl start ssh
+sudo systemctl status ssh
+
+ubuntu
+create a file
+scp <filename> kali@kaliip:/home/kali
+
+if error occus
+go to kali
+sudo nano /etc/ssh/sshd_config_
+PasswordAuthentication yes
+PermitRootLogin yes
+---------------------------------------
+
+
+STORAGE VIR 
+linux
+sudo -s
+fdisk -l | grep /dev
+pvcreate /dev/sdb
+vgcreate sample-vgroup /dev/sdb
+lvcreate -L 12G -n sample-lv sample-vgroup
+mkfs.ext4 /dev/sample-vgroup/sample-lv
+mkdir /mnt/lvm-sample
+mount /dev/sample-vgroup/sample-lv /mnt/lvm-sample/
+lvresize --size +1G sample-vgroup/sample-lv
+df -h
+
+---------------------------------------
+KVM INSTALL
+
+sudo apt install virt-manager -y
+
+In menu vrtual machine manager
+File- add vm
+Maula install,type os-ubuntu,allocate memcpu,create a disk img,forward finish
+
+KVM CONVERTION
+
+install qemu
+
+sudo qemu-img convert -o vpc kali-linux-2025.3-qemu-amd64.qcow2 kali.vhd -p 
+img raw
+vdi vdi
+4sudo qemu-img resize name_kali +16
+
+
+
+
+
+
+
+
