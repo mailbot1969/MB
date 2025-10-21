@@ -182,7 +182,8 @@ KVM CONVERTION
 
 install qemu
 
-sudo qemu-img convert -o vpc kali-linux-2025.3-qemu-amd64.qcow2 kali.vhd -p 
+sudo qemu-img convert -o vhd kali-linux-2025.3-qemu-amd64.qcow2 kali.vhd -p 
+
 img raw
 vdi vdi
 4sudo qemu-img resize name_kali +16
@@ -279,6 +280,7 @@ Now you can copy and paste between Ubuntu and your host both ways.
 ---
 
 Would you like me to include steps for **bidirectional drag and drop** (file sharing by dragging between host and VM) too?
+
 
 
 
