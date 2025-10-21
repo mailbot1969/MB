@@ -125,7 +125,7 @@ mkdir -p /srv/nfs/sample-nfs
 sudo chown nobody:nogroup /srv/nfs/sample-nfs
 sudo chmod 777 /srv/nfs/sample-nfs
 sudo nano /etc/exports
-/srv/nfs/sample-nfs ubuntu ip(rw,syn,no_subtree_check,no_root_squash)
+/srv/nfs/sample-nfs ubuntu ip/24(rw,syn,no_subtree_check,no_root_squash)
 sudo exportfs -a
 sudo systemctl restart nfs-kernel-server
 
@@ -150,7 +150,7 @@ scp <filename> kali@kaliip:/home/kali
 
 if error occus
 go to kali
-sudo nano /etc/ssh/sshd_config_
+sudo nano /etc/ssh/sshd_config
 PasswordAuthentication yes
 PermitRootLogin yes
 ---------------------------------------
@@ -186,6 +186,102 @@ sudo qemu-img convert -o vpc kali-linux-2025.3-qemu-amd64.qcow2 kali.vhd -p
 img raw
 vdi vdi
 4sudo qemu-img resize name_kali +16
+
+
+Bidirectional copy past enable
+To **enable bidirectional copy-paste (clipboard sharing)** between your **Ubuntu VM** and your **host system** in **VirtualBox**, follow these steps carefully 👇
+
+---
+
+### 🧩 Step 1: Start the Ubuntu VM
+
+* Open **Oracle VM VirtualBox**.
+* Select your **Ubuntu virtual machine**.
+* Click **Start** to boot into Ubuntu.
+
+---
+
+### ⚙️ Step 2: Install VirtualBox Guest Additions
+
+This is essential for enabling shared features like copy-paste, drag-and-drop, and shared folders.
+
+#### 🪟 Option A: From the Menu Bar
+
+1. In the VirtualBox VM window, go to:
+
+   ```
+   Devices → Insert Guest Additions CD image…
+   ```
+2. If prompted, click **Run**.
+3. Enter your **password** when asked.
+4. Wait for the installation to complete.
+5. Once done, **reboot** your VM.
+
+#### 🧑‍💻 Option B: Install Manually (if the above doesn’t appear)
+
+Open a terminal in Ubuntu and run:
+
+```bash
+sudo apt update
+sudo apt install build-essential dkms linux-headers-$(uname -r)
+sudo mkdir /media/cdrom
+sudo mount /dev/cdrom /media/cdrom
+cd /media/cdrom
+sudo ./VBoxLinuxAdditions.run
+sudo reboot
+```
+
+---
+
+### 🔄 Step 3: Enable Bidirectional Clipboard
+
+After rebooting:
+
+1. Go to **VirtualBox Manager** (not inside the VM yet).
+2. Select your Ubuntu VM → Click **Settings** ⚙️.
+3. Go to **General → Advanced** tab.
+4. Set:
+
+   * **Shared Clipboard** → `Bidirectional`
+   * *(Optional)* **Drag and Drop** → `Bidirectional`
+5. Click **OK** to save.
+
+---
+
+### 🧠 Step 4: Test Clipboard
+
+Now test:
+
+* Copy text from your **host** → paste into **Ubuntu terminal** or **text editor**.
+* Copy text from **Ubuntu** → paste into **host**.
+
+---
+
+### 🧹 If It Still Doesn’t Work
+
+Try:
+
+```bash
+sudo systemctl restart vboxadd-service
+```
+
+Then reboot once more:
+
+```bash
+sudo reboot
+```
+
+---
+
+✅ **You’re done!**
+Now you can copy and paste between Ubuntu and your host both ways.
+
+---
+
+Would you like me to include steps for **bidirectional drag and drop** (file sharing by dragging between host and VM) too?
+
+
+
 
 
 
