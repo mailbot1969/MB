@@ -131,7 +131,7 @@ sudo systemctl restart nfs-kernel-server
 
 kali
 sudo apt install nfs-common
-sudo mkdir -p /srv/nfs/sample-nfs
+sudo mkdir -p /mnt/nfs/sample-nfs
 sudo mount ubuntu ip:/srv/nfs/sample-nfs /mnt/nfs/sample-nfs
 ------------------------------------------
 
@@ -279,6 +279,7 @@ Now you can copy and paste between Ubuntu and your host both ways.
 ---
 
 Would you like me to include steps for **bidirectional drag and drop** (file sharing by dragging between host and VM) too?
+
 
 
 
